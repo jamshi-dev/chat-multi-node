@@ -20,7 +20,7 @@ import fakeredis.aioredis  # noqa: E402
 import pytest  # noqa: E402
 from httpx import ASGITransport, AsyncClient  # noqa: E402
 
-from app.db import get_engine, get_sessionmaker  # noqa: E402
+from app.db import dispose_engine, get_engine, get_sessionmaker  # noqa: E402
 from app.main import create_app  # noqa: E402
 from app.models import Base  # noqa: E402
 from app.services.broadcaster import Broadcaster  # noqa: E402
@@ -47,9 +47,14 @@ async def _prepare_db() -> AsyncGenerator[None]:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
+    # Drop the engine so the app under test (which may run in a different event loop,
+    # e.g. Starlette's TestClient for WebSockets) binds a fresh one on first use.
+    await dispose_engine()
     yield
+    engine = get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+    await dispose_engine()
 
 
 @pytest.fixture

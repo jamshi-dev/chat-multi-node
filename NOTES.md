@@ -139,4 +139,4 @@ publishing instance receives its own message back the same way, so there's no
 
 `docker compose up` on a clean checkout → migrations auto-run → both replicas healthy
 → `make demo` shows cross-instance fan-out + persistence → bad/missing WS auth closes
-`4401` → graceful shutdown drains. `make check` (ruff + ty + pytest, 15 tests) is green.
+`4401` → graceful shutdown drains. `make check` (ruff + ty + pytest, 22 tests) is green.

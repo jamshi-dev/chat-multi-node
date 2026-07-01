@@ -147,8 +147,11 @@ make test
 Covered: password hashing & JWT type enforcement; auth + conversation REST flows;
 ownership isolation; **cross-instance Redis fan-out** (`tests/test_broadcaster.py`);
 send→persist→broadcast→assistant reply (`tests/test_chat_flow.py`); client-id dedupe;
-cursor pagination. Tests use SQLite + an in-process fakeredis, so `make test` needs no
-running services.
+cursor pagination; and the **live WebSocket endpoint** end to end
+(`tests/test_ws_endpoint.py`) — auth handshake, `auth_ok`, message broadcast +
+assistant reply over a real socket, ping/pong, bad-frame handling, and every close
+code (`4401`/`4403`/`4404`). Tests use SQLite + an in-process fakeredis, so `make test`
+needs no running services.
 
 ## What's not done / cut
 

@@ -46,7 +46,10 @@ async def get_session() -> AsyncGenerator[AsyncSession]:
 
 
 async def dispose_engine() -> None:
-    global _engine
+    global _engine, _sessionmaker
     if _engine is not None:
         await _engine.dispose()
         _engine = None
+    # Clear the sessionmaker too so a fresh engine is bound on next use (matters for
+    # tests that recreate the engine inside a different event loop).
+    _sessionmaker = None
